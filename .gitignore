@@ -114,3 +114,6 @@ android-sdk/
 **/.emergent/recordings/
 build/bootstrap-checks/downloads-corrupt/llvm-linux.tar.xz
 build/bootstrap-checks/downloads-corrupt/llvm-windows.zip
+*.env
+credentials.json
+.credentials
