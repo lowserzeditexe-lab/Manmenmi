@@ -1,0 +1,124 @@
+name: M0 native foundation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: m0-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux:
+    name: Linux x64 / Clang 18.1.8 / ${{ matrix.variant }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [debug, release, coverage, sanitizers]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12.9'
+      - name: Exact build tool versions
+        run: python -m pip install cmake==3.31.6 ninja==1.11.1.3
+      - name: LLVM 18.1.8 official release
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libtinfo5 libxml2
+          archive="$RUNNER_TEMP/llvm.tar.xz"
+          curl --fail --location --retry 3 'https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz' --output "$archive"
+          sha256sum "$archive"
+          mkdir -p "$RUNNER_TEMP/llvm"
+          tar -xf "$archive" -C "$RUNNER_TEMP/llvm" --strip-components=1
+          printf '%s\n' "$RUNNER_TEMP/llvm/bin" >> "$GITHUB_PATH"
+      - name: Record toolchain and build
+        shell: bash
+        run: |
+          set -euo pipefail
+          clang++ --version
+          clang++ --version | grep -F 'clang version 18.1.8'
+          cmake --version
+          ninja --version
+          uname -m
+          cmake --preset linux-clang-${{ matrix.variant }}
+          cmake --build --preset linux-clang-${{ matrix.variant }} --parallel 2
+      - name: CTest
+        shell: bash
+        env:
+          LLVM_PROFILE_FILE: ${{ github.workspace }}/build/linux-clang-coverage/%m-%p.profraw
+          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: ctest --preset linux-clang-${{ matrix.variant }} --output-junit results.xml
+      - name: LLVM coverage report
+        if: matrix.variant == 'coverage'
+        run: cmake -DBUILD_DIR=build/linux-clang-coverage -P cmake/Coverage.cmake
+      - name: Evidence artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: linux-x64-${{ matrix.variant }}
+          path: |
+            build/linux-clang-${{ matrix.variant }}/results.xml
+            build/linux-clang-${{ matrix.variant }}/Testing/Temporary/LastTest.log
+            build/linux-clang-${{ matrix.variant }}/CMakeCache.txt
+            build/linux-clang-${{ matrix.variant }}/coverage.txt
+          if-no-files-found: warn
+          retention-days: 14
+
+  windows:
+    name: Windows x64 / LLVM-MinGW 20240619 / ${{ matrix.variant }}
+    runs-on: windows-2022
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [debug, release]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12.9'
+      - name: Exact build tool versions
+        run: python -m pip install cmake==3.31.6 ninja==1.11.1.3
+      - name: LLVM-MinGW 20240619 (Clang 18.1.8, UCRT)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $archive = Join-Path $env:RUNNER_TEMP 'llvm-mingw.zip'
+          curl.exe --fail --location --retry 3 'https://github.com/mstorsjo/llvm-mingw/releases/download/20240619/llvm-mingw-20240619-ucrt-x86_64.zip' --output $archive
+          if ($LASTEXITCODE -ne 0) { throw 'LLVM-MinGW download failed' }
+          Get-FileHash -Algorithm SHA256 $archive
+          Expand-Archive -Path $archive -DestinationPath $env:RUNNER_TEMP
+          "$env:RUNNER_TEMP\llvm-mingw-20240619-ucrt-x86_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Build and test (no MSVC SDK required)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = x86_64-w64-mingw32-clang++ --version
+          $version
+          if ($LASTEXITCODE -ne 0 -or "$version" -notmatch 'clang version 18.1.8') { throw 'Unexpected compiler' }
+          cmake --version
+          ninja --version
+          cmake --preset windows-clang-${{ matrix.variant }}
+          if ($LASTEXITCODE -ne 0) { throw 'Configure failed' }
+          cmake --build --preset windows-clang-${{ matrix.variant }} --parallel 2
+          if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
+          ctest --preset windows-clang-${{ matrix.variant }} --output-junit results.xml
+          if ($LASTEXITCODE -ne 0) { throw 'CTest failed' }
+      - name: Evidence artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: windows-x64-${{ matrix.variant }}
+          path: |
+            build/windows-clang-${{ matrix.variant }}/results.xml
+            build/windows-clang-${{ matrix.variant }}/Testing/Temporary/LastTest.log
+            build/windows-clang-${{ matrix.variant }}/CMakeCache.txt
+          if-no-files-found: warn
+          retention-days: 14

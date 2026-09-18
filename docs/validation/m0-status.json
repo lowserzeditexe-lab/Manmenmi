@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "milestone": "M0",
+  "gate": "OPEN",
+  "m1_started": false,
+  "date_utc": "2026-09-18",
+  "source_reference": "M0 working tree; remote CI commit UNKNOWN",
+  "tests_per_configuration": 26,
+  "observations": [
+    {"environment": "Linux ARM64 Debug", "status": "OBSERVED", "build": "PASS", "ctest": "26/26", "official_target": false},
+    {"environment": "Linux ARM64 Release", "status": "OBSERVED", "build": "PASS", "ctest": "26/26", "official_target": false},
+    {"environment": "Linux ARM64 ASan+UBSan", "status": "OBSERVED", "build": "PASS", "ctest": "26/26", "official_target": false},
+    {"environment": "Linux ARM64 LLVM coverage", "status": "OBSERVED", "build": "PASS", "ctest": "26/26", "lines_percent": 96.25, "branches_percent": 94.50, "diagnostics": 0},
+    {"environment": "Linux x64 Debug cross on ARM64", "status": "OBSERVED", "build": "PASS", "execution": "QEMU user 7.2", "ctest": "26/26"},
+    {"environment": "Linux x64 Release cross on ARM64", "status": "OBSERVED", "build": "PASS", "execution": "QEMU user 7.2", "ctest": "26/26"},
+    {"environment": "Windows x64 Debug cross on ARM64", "status": "OBSERVED", "build": "PASS", "execution": "UNKNOWN", "compiler": "LLVM-MinGW 20240619 Clang 18.1.8"},
+    {"environment": "Windows x64 Release cross on ARM64", "status": "OBSERVED", "build": "PASS", "execution": "UNKNOWN", "compiler": "LLVM-MinGW 20240619 Clang 18.1.8"},
+    {"environment": "Workflow static validation", "status": "OBSERVED", "tool": "actionlint 1.7.7", "exit_code": 0},
+    {"environment": "Windows i686 configure negative test", "status": "OBSERVED", "result": "REJECTED_AS_EXPECTED", "message": "MANMENMI requires a 64-bit toolchain."}
+  ],
+  "native_ci": {"linux_x64": "UNKNOWN", "windows_x64": "UNKNOWN", "run_url": null},
+  "graphics_backends": {"vulkan": "UNIMPLEMENTED", "dx12": "UNIMPLEMENTED", "opengl": "UNIMPLEMENTED"},
+  "gx2_calls_implemented": 0,
+  "gx2_calls_tested": 0,
+  "blockers": ["Native Windows and Linux CI runs and commit-linked evidence are still required."]
+}

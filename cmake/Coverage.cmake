@@ -1,0 +1,23 @@
+if(NOT DEFINED BUILD_DIR)
+  message(FATAL_ERROR "Pass -DBUILD_DIR=<coverage build directory>")
+endif()
+find_program(LLVM_PROFDATA llvm-profdata REQUIRED)
+find_program(LLVM_COV llvm-cov REQUIRED)
+file(GLOB profiles "${BUILD_DIR}/*.profraw")
+if(NOT profiles)
+  message(FATAL_ERROR "No profiles; run instrumented CTest with LLVM_PROFILE_FILE first")
+endif()
+execute_process(COMMAND "${LLVM_PROFDATA}" merge -sparse ${profiles} -o "${BUILD_DIR}/coverage.profdata"
+  COMMAND_ERROR_IS_FATAL ANY)
+set(objects "${BUILD_DIR}/manmenmi_probe")
+foreach(suite IN ITEMS core config log contracts)
+  list(APPEND objects -object "${BUILD_DIR}/tests/manmenmi_${suite}_tests")
+endforeach()
+execute_process(COMMAND "${LLVM_COV}" report ${objects}
+  "-instr-profile=${BUILD_DIR}/coverage.profdata" "-ignore-filename-regex=tests/|/usr/"
+  OUTPUT_FILE "${BUILD_DIR}/coverage.txt" ERROR_VARIABLE diagnostics COMMAND_ERROR_IS_FATAL ANY)
+if(NOT "${diagnostics}" STREQUAL "")
+  message(FATAL_ERROR "Coverage diagnostics must be resolved before publishing a measure:\n${diagnostics}")
+endif()
+file(READ "${BUILD_DIR}/coverage.txt" report)
+message(STATUS "M0 project source coverage (not GX2/backend coverage):\n${report}")
