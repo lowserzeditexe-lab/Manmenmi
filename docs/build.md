@@ -4,9 +4,12 @@
 
 C++20, CMake **≥ 3.25**, Ninja, Clang, bibliothèque standard C++ et SDK système.
 Aucun SDK Nintendo, dump, SDK Vulkan, OpenGL, SDL ou service réseau n'est requis
-pour configurer/compiler/tester MANMENMI. CMake ne télécharge **rien**.
-La configuration CI épingle LLVM **18.1.8**, CMake **3.31.6**, Ninja Python
-**1.11.1.3** (Ninja 1.11.1), Python **3.12.9**. Python ne fait pas partie du build local.
+pour configurer/compiler/tester MANMENMI. Le build CMake ordinaire ne télécharge
+**rien** ; le bootstrap d'outillage CI est une opération distincte et explicite.
+La configuration CI épingle LLVM **18.1.8**, CMake **3.31.6**, Ninja **1.11.1**,
+LLVM-MinGW **20240619**, libtinfo5 **6.3-2ubuntu0.3** et actionlint **1.7.7**.
+Les archives sont vérifiées par SHA-256 avant extraction. Python/pip ne sont requis
+ni pour ce bootstrap CI ni pour le build local. Voir [TOOLCHAIN](build/TOOLCHAIN.md).
 Clang **14.0.6** est également OBSERVED dans les essais locaux.
 
 ## Linux x64
@@ -90,10 +93,11 @@ Il n'est ni lié, ni utilisé par MANMENMI. Cette mesure ne remplace pas les run
 
 Workflow : [ci.yml](../.github/workflows/ci.yml). Matrice : Linux Debug/Release/
 coverage/sanitizers et Windows Debug/Release. SHA complets pour les actions ;
-versions exactes pour LLVM/CMake/Ninja/Python. Les archives LLVM viennent des
-releases officielles ; leur SHA-256 est journalisé, **pas comparé à un hash prévalidé**.
-Les images GitHub, paquets système, SDK et bibliothèques standard évoluent : la
-construction n'est donc pas hermétique ni garantie bit-identique. Épingler les
-hashes d'archives et l'image complète reste une amélioration de reproductibilité.
+versions exactes et SHA-256 pour toutes les archives téléchargées par le bootstrap.
+Les images GitHub et composants système restent une limite explicitement documentée.
+La comparaison de deux builds propres Debug/Release exige des artefacts identiques
+au sein du même environnement, sans promettre une égalité entre systèmes différents.
+Le [protocole distant](validation/REMOTE_CI.md) exige également un run volontairement
+rouge. Les preuves natives restent **PENDING faute de dépôt distant**.
 
 Un YAML présent n'est pas une CI passée. Voir [validation M0](validation/M0.md).

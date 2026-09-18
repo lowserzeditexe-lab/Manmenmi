@@ -56,10 +56,13 @@ auto seul → Vulkan uniquement. Fallback uniquement si config/CLI explicite,
 journalisé même avec log-level=error. Aucun device réellement sondé.
 
 CMake≥3.25, Ninja, Clang14.0.6 local ; CI LLVM18.1.8 Linux, Windows LLVM-MinGW
-20240619 UCRT/Clang18.1.8 sans SDK propriétaire obligatoire. CMake3.31.6,
-ninja Python1.11.1.3 et Python3.12.9 en CI. Actions SHA immutables.
-Les images/paquets système ne sont pas hermétiques ; SHA téléchargements
-CI journalisés mais pas comparés à un lock de confiance. Documenté.
+20240619 UCRT/Clang18.1.8 sans SDK propriétaire obligatoire. CMake3.31.6 et
+Ninja1.11.1 archives officielles ; aucun Python/pip/setup-python en CI désormais.
+Actions checkout/upload-artifact SHA immutables. Les huit archives du bootstrap
+(LLVM×2, CMake×2, Ninja×2, libtinfo5 6.3-2ubuntu0.3, actionlint1.7.7) sont verrouillées
+par version/URL/SHA256 avec contrôle obligatoire avant extraction/cache.
+Source : ci/toolchain-lock.json. Les images et composants bootstrap/système
+restent non hermétiques, limites et mise à jour dans docs/build/TOOLCHAIN.md.
 
 ## Livré
 
@@ -104,7 +107,8 @@ artefacts ignorés Git, pas d'URL de CI inventée. Aucune auth/aucun credential.
 4. Ne pas substituer cross build/QEMU/actionlint à ces preuves natives.
 
 ### P1 — ensuite seulement
-1. Verrouiller hashes des archives CI et environnement système plus strictement.
+1. Hashes des archives CI verrouillés et vérifiés dans la deuxième itération.
+   Un environnement système plus hermétique reste une évolution distincte.
 2. M1 : recherche/pin SDL3, pont privé fenêtre-présentation, création/destroy/
    resize/device/present, tests par backend présent localement, sélection explicite.
 3. M2 : contrats complets device/queue/command buffer/buffer/texture/shader/
@@ -121,5 +125,59 @@ support ni compatibilité large proclamés sans mesure.
 
 ## Prochaine tâche
 
-Compléter les preuves natives M0 et seulement ensuite décider le périmètre M1.
+Statut actuel : **M0 — READY FOR REMOTE CI VALIDATION**.
+Compléter les preuves natives M0 quand l'utilisateur aura créé/connecté son dépôt.
+Même après M0 COMPLETE, ne commencer M1 que sur nouvelle instruction explicite.
 Ne pas construire une UI web ou ajouter de dépendances graphiques à cette reprise.
+
+## Deuxième demande / choix définitif (2026-09-18)
+
+L'utilisateur a demandé la fermeture M0 avec preuves natives, tests/artefacts/
+propagation d'échec, verrou SHA256 et audit final. Puis a précisé **aucun dépôt
+GitHub encore créé** : conserver le repo local, préparer les workflows, vérifier
+localement, indiquer CI native **PENDING faute de repository distant**, ne demander
+ou ajouter aucun secret/token. Arrêt demandé au statut READY FOR REMOTE CI VALIDATION.
+
+### Ajouts de cette itération
+
+- ci/Bootstrap.cmake : archives du lock vérifiées avant extraction, cache corrompu
+  refusé, mode VERIFY_ONLY sans installation, garde hôte natif x64.
+- CMake bootstrap préinstallé minimum3.25 puis CMake/CTest verrouillé3.31.6 ;
+  libtinfo5 extrait localement avec dpkg-deb, pas apt/sudo. Versions vérifiées.
+- ci/RunTests.cmake : inventaire strict26 et erreur CTest propagée.
+- MANMENMI_CI_INJECT_FAILURE opt-in : 27e sentinelle pour runs négatifs ; défautOFF.
+- Contrôle isolé de propagation + inputworkflow inject_failure pour vraie preuve
+  distante rouge ultérieure (ne pas confondre les deux).
+- Artefacts : magic/arch ELF/PE, six sorties, JUnit26 sans skip/fail,
+  manifestSHA256, relecture CHECK_MANIFEST sans écrasement.
+- Reproductibilité : deux répertoires propres distincts, six artefacts comparés,
+  source/debug prefix maps et timestampPE désactivé, pas de promesse inter-image.
+- Orchestration commune BuildAndVerify, auditborné source avec inventaireSha,
+  enregistrement image/versions/commit et upload même en cas d'échec.
+- TOOLCHAIN.md, REMOTE_CI.md, M0.md avec vocabulaire six statuts +PENDING,
+  README explicitement «aucune compatibilité Wii U fonctionnelle» et statut READY.
+
+### Preuves indépendantes
+
+/app/test_reports/iteration_2.json : aucun bug critique/mineur ; seul blocage
+restant = absence de repo/runs natifs. Ne pas transformer son retest_needed
+(preuve distante à venir) en CI locale prétendument native.
+
+- 26/26 ARM Debug/Release/Coverage/ASan+UBSan, 26/26 Linuxx64 cross Debug/Release QEMU.
+- 8 empreintes de cache confirmées, manifesteCMake comparé ; modesVERIFY_ONLY,
+  hôteARM refusé, mauvaiseSHA/lock refusés sans extraction.
+- Suiteinjectée26PASS+1FAIL CTestexit8, wrappernonzero ; nombreincorrect/aucuntestrejetés.
+- Artefacts manquants/tronqués/archincorrecte/altérés, manifestsaltérés et
+  JUnitmalformé/incomplet/fail/skip rejetés (9contrôlesnégatifs).
+- Reproindépendante ARM Debug/Release et Linuxx64crossDebug : 6SHAidentiques ;
+  mêmesrépertoires et artefactmuté rejetés. Autrescomparaisonsnatives PENDING.
+- actionlint1.7.7 et auditborné PASS, pas decontinue-on-error oufauxWILL_FAIL.
+- Tous les caches debuildnormaux ont INJECT_FAILURE=OFF après tests.
+- L'agent de test n'a changé que son rapport, pas les sources.
+
+### Arrêt et suite autorisée
+
+M0 non COMPLETE. Aucun M1. Aucun secret. Attendre le dépôt distant puis effectuer
+les six jobs natifs normaux + runrouge au mêmecommit, télécharger/vérifier les
+artefacts, consigner URL/commit/IDs/image. La reproductibilité VERIFIED sera toujours
+qualifiée par son périmètre (deuxbuilds mêmesoutils/environnement), pas hermétique.

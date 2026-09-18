@@ -2,6 +2,9 @@
   "schema_version": 1,
   "milestone": "M0",
   "gate": "OPEN",
+  "delivery_status": "M0 — READY FOR REMOTE CI VALIDATION",
+  "local_verification_report": "/app/test_reports/iteration_2.json",
+  "local_verification": "VERIFIED",
   "m1_started": false,
   "date_utc": "2026-09-18",
   "source_reference": "M0 working tree; remote CI commit UNKNOWN",
@@ -18,9 +21,18 @@
     {"environment": "Workflow static validation", "status": "OBSERVED", "tool": "actionlint 1.7.7", "exit_code": 0},
     {"environment": "Windows i686 configure negative test", "status": "OBSERVED", "result": "REJECTED_AS_EXPECTED", "message": "MANMENMI requires a 64-bit toolchain."}
   ],
-  "native_ci": {"linux_x64": "UNKNOWN", "windows_x64": "UNKNOWN", "run_url": null},
+  "native_ci": {"linux_x64": "PENDING", "windows_x64": "PENDING", "run_url": null, "reason": "No remote repository exists; user explicitly requested local preparation only."},
+  "toolchain_lock": {"file": "ci/toolchain-lock.json", "downloaded_archives": 8, "versions": "PINNED", "sha256": "DOCUMENTED", "verify_before_extraction": true},
+  "reproducibility": {"scope": "Two clean build directories, same sources/toolchain/environment/configuration; six artifacts compared", "native_ci": "PENDING", "hermetic_environment": false},
+  "failure_propagation": {"local_wrapper": "VERIFIED", "local_injected_suite": "26 PASS + sentinel FAIL; nonzero propagated", "remote_negative_run": "PENDING"},
+  "local_reproducibility_verified": ["Linux ARM64 Debug", "Linux ARM64 Release", "Linux x64 cross Debug"],
+  "local_artifact_negative_controls": "VERIFIED",
+  "local_hash_negative_controls": "VERIFIED",
+  "repository_hygiene": "PASS within documented source-snapshot scope",
+  "documentation": "PASS",
+  "automatic_m1_start": false,
   "graphics_backends": {"vulkan": "UNIMPLEMENTED", "dx12": "UNIMPLEMENTED", "opengl": "UNIMPLEMENTED"},
   "gx2_calls_implemented": 0,
   "gx2_calls_tested": 0,
-  "blockers": ["Native Windows and Linux CI runs and commit-linked evidence are still required."]
+  "blockers": ["No remote repository; native Windows/Linux CI, artifact verification and an intentionally red workflow run remain PENDING."]
 }

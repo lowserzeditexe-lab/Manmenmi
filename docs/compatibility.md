@@ -17,9 +17,9 @@ un test du parser `--backend` **n'est pas un test graphique**.
 
 | Environnement | État réel |
 |---|---|
-| Linux x64 natif | Cible ; CI définie, exécution native UNKNOWN tant que non consignée |
+| Linux x64 natif | Cible ; CI définie, validation native PENDING faute de repository distant |
 | Linux x64 cross + QEMU sur ARM64 | OBSERVED : compilation Clang et CTests ; voir preuves |
-| Windows x64 natif | Cible ; CI LLVM-MinGW définie, tests natifs UNKNOWN tant que non consignés |
+| Windows x64 natif | Cible ; CI LLVM-MinGW définie, tests natifs PENDING faute de repository distant |
 | Linux ARM64 | Hôte de vérification du socle avec dérogation explicite, **pas une plateforme supportée** |
 | macOS | Hors périmètre ; configuration refusée |
 | 32-bit | Hors périmètre ; configuration refusée |

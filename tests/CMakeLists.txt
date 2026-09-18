@@ -54,3 +54,10 @@ cli_case(missing_config 4 "IO_ERROR" "" "--config=${fixture}.missing")
 cli_case(invalid_config 2 "config line 2" "" "--config=${CMAKE_CURRENT_BINARY_DIR}/invalid.conf")
 add_test(NAME architecture.no_native_types COMMAND "${CMAKE_COMMAND}" "-DROOT=${PROJECT_SOURCE_DIR}" -P "${CMAKE_CURRENT_SOURCE_DIR}/check_public_headers.cmake")
 set_tests_properties(architecture.no_native_types PROPERTIES LABELS "architecture;foundation" TIMEOUT 30)
+
+# Opt-in negative workflow run only: normal M0 suite stays at exactly 26 tests.
+option(MANMENMI_CI_INJECT_FAILURE "Add a deliberately failing sentinel for CI propagation checks" OFF)
+if(MANMENMI_CI_INJECT_FAILURE)
+  add_test(NAME sentinel.forced_failure COMMAND "${CMAKE_COMMAND}" -E false)
+  set_tests_properties(sentinel.forced_failure PROPERTIES LABELS "ci-negative" TIMEOUT 10)
+endif()

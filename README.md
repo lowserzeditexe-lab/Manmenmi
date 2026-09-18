@@ -2,9 +2,11 @@
 
 **Fondation native de compatibilité Wii U pour PC — C++20, indépendante de tout jeu.**
 
-> **M0 uniquement. Validation globale encore ouverte.** Aucune fenêtre, aucun
+> **M0 — READY FOR REMOTE CI VALIDATION.** Aucune fenêtre, aucun
 > rendu, aucun appel GX2/Cafe OS implémenté. Les backends sont **UNIMPLEMENTED**.
 > Les tests locaux ne valent pas une CI Windows/Linux x64 passée.
+> **Aucune compatibilité Wii U fonctionnelle n'est livrée à ce stade.**
+> CI native Windows/Linux **PENDING faute de repository distant**. M1 non commencé.
 
 MANMENMI prépare une couche runtime native pour des projets recompilés, de
 reverse engineering/decompilation et des clients neutres. Ce n'est **ni un
@@ -20,6 +22,7 @@ nécessaire pour compiler. Aucun fichier propriétaire Nintendo n'est distribué
 - Interfaces abstraites runtime/fenêtre/graphique, sans SDL/Vulkan/DX12/OpenGL
   dans les types publics. Elles ne sont pas des implémentations.
 - CMake/Ninja, presets Clang, CTest autonome, CI Windows/Linux x64 définie,
+  outils verrouillés par SHA-256, contrôles d'échec/artefacts/reproductibilité,
   mesures de coverage et instrumentation Linux optionnelles.
 - Recherche sourcée, frontières architecturales et matrice de compatibilité honnête.
 
@@ -78,6 +81,8 @@ cmake/ configs/ docs/ .github/workflows/
 | Compatibilité réellement établie | [Matrice](docs/compatibility.md) |
 | Aucun appel GX2 couvert en M0 | [Couverture GX2](docs/gx2/api-coverage.md) |
 | Critères bloquants et preuves | [Validation M0](docs/validation/M0.md) |
+| Versions / SHA-256 / procédure de mise à jour | [Toolchain CI](docs/build/TOOLCHAIN.md) |
+| Protocole normal et volontairement rouge | [Validation distante](docs/validation/REMOTE_CI.md) |
 | Dépendances et contributions | [Politique](docs/dependencies.md), [contribution](CONTRIBUTING.md) |
 
 **DOCUMENTED / OBSERVED / INFERRED / UNKNOWN** qualifient les conclusions de

@@ -7,12 +7,15 @@ licences documentées, versions exactes, aucune dépendance propriétaire obliga
 
 **Zéro bibliothèque applicative tierce** : C++ standard et threads système
 suffisent. Pas de FetchContent, submodule, git clone ou requête réseau depuis
-CMake/CTest. SDL3, Vulkan, DX12, GL, wut, GoogleTest, JSON/TOML frameworks ne sont
+la configuration/compilation CMake et les CTests ordinaires du projet. SDL3,
+Vulkan, DX12, GL, wut, GoogleTest, JSON/TOML frameworks ne sont
 pas nécessaires aux fonctions livrées. Format de config volontairement minimal.
 
 Les outils CI et leurs sources sont dans [ci.yml](../.github/workflows/ci.yml)
-et les [notices](../THIRD_PARTY_NOTICES.md). Versions exactes téléchargées avant
-le build ; bibliothèques système de l'image non entièrement épinglées. Ce niveau
+et les [notices](../THIRD_PARTY_NOTICES.md). Versions exactes et SHA-256 vérifiés
+avant extraction par le bootstrap CI **explicite et séparé**. Le verrou est dans
+`ci/toolchain-lock.json`, la procédure dans [TOOLCHAIN](build/TOOLCHAIN.md).
+Bibliothèques système de l'image non entièrement épinglées. Ce niveau
 de reproductibilité est annoncé explicitement, pas présenté comme hermétique.
 Le socle web préexistant de l'environnement a été sorti du dépôt source natif ;
 il ne fait pas partie du graphe de construction MANMENMI.

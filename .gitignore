@@ -14,6 +14,13 @@
 *.key
 *.profraw
 *.profdata
+*.tar.xz
+*.exe
+*.dll
+*.pdb
+*.obj
+*.o
+*.a
 CMakeUserPresets.json
 .env
 .env.*
@@ -105,3 +112,5 @@ android-sdk/
 
 # overlay black-box crash/user-report dumps — session data, never history
 **/.emergent/recordings/
+build/bootstrap-checks/downloads-corrupt/llvm-linux.tar.xz
+build/bootstrap-checks/downloads-corrupt/llvm-windows.zip

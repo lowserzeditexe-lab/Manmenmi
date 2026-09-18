@@ -1,4 +1,17 @@
 add_library(manmenmi_options INTERFACE)
+# Stable source/build paths permit comparisons of independent clean builds.
+# This does not pin the host OS, standard library or linker distribution.
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT MSVC)
+  target_compile_options(manmenmi_options INTERFACE
+    "-ffile-prefix-map=${PROJECT_SOURCE_DIR}=/manmenmi"
+    "-ffile-prefix-map=${PROJECT_BINARY_DIR}=/manmenmi/build"
+    "-fdebug-prefix-map=${PROJECT_SOURCE_DIR}=/manmenmi"
+    "-fdebug-prefix-map=${PROJECT_BINARY_DIR}=/manmenmi/build"
+    -fdebug-compilation-dir=/manmenmi/build)
+  if(MINGW)
+    target_link_options(manmenmi_options INTERFACE -Wl,--no-insert-timestamp)
+  endif()
+endif()
 if(MSVC)
   target_compile_options(manmenmi_options INTERFACE /W4 /permissive- /EHsc /utf-8)
   if(MANMENMI_WARNINGS_AS_ERRORS)

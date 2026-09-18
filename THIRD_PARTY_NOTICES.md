@@ -9,12 +9,13 @@ aucun SDK Nintendo, dump ou asset de jeu dans cette livraison.** Les projets
 | Composant | Version / origine | Usage | Licence / remarque |
 |---|---|---|---|
 | Bibliothèque standard C++ / threads système | chaîne hôte documentée dans les preuves | Seules dépendances de la fondation | Licence propre à la chaîne ; aucune copie de sources ici |
-| CMake / CTest | minimum 3.25 ; CI 3.31.6, [Kitware](https://cmake.org/) / paquet PyPI exact | Configuration, compilation et tests | BSD-3-Clause ; notices du paquet conservées par son installateur |
-| Ninja | CI paquet `ninja==1.11.1.3`, binaire 1.11.1, [ninja-build](https://github.com/ninja-build/ninja) | Build | Apache-2.0 ; wrapper Python avec notices propres |
+| CMake / CTest | minimum 3.25 ; CI archive officielle 3.31.6, [Kitware](https://cmake.org/) | Configuration, compilation et tests | BSD-3-Clause ; notices de l'archive conservées |
+| Ninja | archive officielle 1.11.1, [ninja-build](https://github.com/ninja-build/ninja) | Build | Apache-2.0 |
 | LLVM / Clang / compiler-rt / LLVM tools | CI Linux 18.1.8, [release officielle](https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.8) | Compilation, coverage, sanitizers | Apache-2.0 WITH LLVM-exception ; voir notices de la distribution |
 | LLVM-MinGW | CI Windows **20240619 UCRT**, LLVM 18.1.8, [release](https://github.com/mstorsjo/llvm-mingw/releases/tag/20240619) | Chaîne Windows sans SDK MSVC | Distribution multi-licences : LLVM/Clang/libc++ Apache-2.0 WITH LLVM-exception ; mingw-w64 et winpthreads avec notices propres, à conserver si binaires redistribués |
-| Python | CI 3.12.9, [python.org](https://www.python.org/) | Installation des outils CI, pas requis pour builder localement | PSF-2.0 et notices associées |
-| libtinfo5 / libxml2 | paquets système de l'image ubuntu-22.04 | Exécution du Clang précompilé CI | MIT/X11 et notices propres ; pas liés par MANMENMI |
+| libtinfo5 | archive Ubuntu amd64 **6.3-2ubuntu0.3**, SHA-256 verrouillé | Exécution du Clang précompilé CI ; extraction privée, aucun apt/sudo | MIT/X11 et notices ncurses ; pas lié par MANMENMI |
+| actionlint | release officielle **1.7.7**, SHA-256 verrouillé Linux x64 | Contrôle statique workflow ; shellcheck/pyflakes désactivés, aucune dépendance implicite à ces outils | MIT |
+| zlib / composants hôtes | image du runner, versions observées enregistrées | Chargement des outils Linux, pas bibliothèque applicative ajoutée au core | zlib et notices système respectives |
 | GCC/libstdc++/glibc | version système, local GCC 12.2/glibc 2.36 | Headers/runtime Linux, y compris cross x64 | GCC GPL avec Runtime Library Exception applicable ; glibc LGPL, licences par composant |
 
 `UCRT` est un composant système Windows, non distribué ici. Les exécutables
@@ -28,8 +29,14 @@ des composants embarqués avec leurs textes de licence. M0 n'est pas un paquet b
 | Projet (MIT) | Version | Révision épinglée |
 |---|---|---|
 | [actions/checkout](https://github.com/actions/checkout) | v4.2.2 | `11bd71901bbe5b1630ceea73d27597364c9af683` |
-| [actions/setup-python](https://github.com/actions/setup-python) | v5.6.0 | `a26af69be951a213d495a4c3e4e4022e16d87065` |
 | [actions/upload-artifact](https://github.com/actions/upload-artifact) | v4.6.2 | `ea165f8d65b6e75b540449e92b4886f43607fa02` |
+
+Versions/URL/SHA-256 des huit archives et des snapshots sources des actions :
+[`ci/toolchain-lock.json`](ci/toolchain-lock.json). Procédure et limites :
+[TOOLCHAIN.md](docs/build/TOOLCHAIN.md). Python/pip/setup-python et l'installation
+globale apt libtinfo/libxml2 ne sont plus utilisés. CMake bootstrap, Git,
+shells, `dpkg-deb`, CA/TLS et runtime Node des actions sont des outils préinstallés
+de l'image, non vendored ; leurs limites de verrouillage sont documentées.
 
 ## Outils locaux supplémentaires de vérification
 
