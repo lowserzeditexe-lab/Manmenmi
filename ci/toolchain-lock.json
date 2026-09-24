@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-18",
+  "archives": [
+    {
+      "id": "llvm-linux", "platform": "linux-x64", "version": "18.1.8", "kind": "archive", "file": "llvm-linux.tar.xz",
+      "url": "https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.8/clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz",
+      "sha256": "54ec30358afcc9fb8aa74307db3046f5187f9fb89fb37064cdde906e062ebf36",
+      "bin": "clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04/bin",
+      "reason": "Clang, compiler-rt, llvm-cov et llvm-profdata pour build/tests/instrumentation Linux.",
+      "provenance": "SHA-256 calculé sur l'archive de la release officielle ; signature amont non vérifiée."
+    },
+    {
+      "id": "llvm-windows", "platform": "windows-x64", "version": "20240619 / Clang 18.1.8", "kind": "archive", "file": "llvm-windows.zip",
+      "url": "https://github.com/mstorsjo/llvm-mingw/releases/download/20240619/llvm-mingw-20240619-ucrt-x86_64.zip",
+      "sha256": "810703594a7e3eea03385b5329c7ea3bd65f5e496b44cf1b68c17ff436d265e7",
+      "bin": "llvm-mingw-20240619-ucrt-x86_64/bin",
+      "reason": "Clang, libc++, winpthreads et MinGW-w64 ; aucun SDK MSVC propriétaire requis.",
+      "provenance": "SHA-256 calculé sur la release officielle LLVM-MinGW."
+    },
+    {
+      "id": "cmake-linux", "platform": "linux-x64", "version": "3.31.6", "kind": "archive", "file": "cmake-linux.tar.gz",
+      "url": "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-linux-x86_64.tar.gz",
+      "sha256": "5a1133ff103c71eb5120e2cc3de922733e7d8a26a98ae716397e8676adb367bf",
+      "bin": "cmake-3.31.6-linux-x86_64/bin", "reason": "CMake/CTest Linux sans pip ni résolution transitive.",
+      "provenance": "SHA-256 calculé et comparé au manifeste Kitware cmake-3.31.6-SHA-256.txt."
+    },
+    {
+      "id": "cmake-windows", "platform": "windows-x64", "version": "3.31.6", "kind": "archive", "file": "cmake-windows.zip",
+      "url": "https://github.com/Kitware/CMake/releases/download/v3.31.6/cmake-3.31.6-windows-x86_64.zip",
+      "sha256": "d163cd3ab4959b0a53fa8988f2ddbd2e6c501658201e6a154386bad9dbe4f836",
+      "bin": "cmake-3.31.6-windows-x86_64/bin", "reason": "CMake/CTest Windows sans pip.",
+      "provenance": "SHA-256 calculé et comparé au manifeste Kitware cmake-3.31.6-SHA-256.txt."
+    },
+    {
+      "id": "ninja-linux", "platform": "linux-x64", "version": "1.11.1", "kind": "archive", "file": "ninja-linux.zip",
+      "url": "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-linux.zip",
+      "sha256": "b901ba96e486dce377f9a070ed4ef3f79deb45f4ffe2938f8e7ddc69cfb3df77",
+      "bin": ".", "reason": "Exécuteur du graphe de build Linux.", "provenance": "SHA-256 calculé sur la release officielle."
+    },
+    {
+      "id": "ninja-windows", "platform": "windows-x64", "version": "1.11.1", "kind": "archive", "file": "ninja-windows.zip",
+      "url": "https://github.com/ninja-build/ninja/releases/download/v1.11.1/ninja-win.zip",
+      "sha256": "524b344a1a9a55005eaf868d991e090ab8ce07fa109f1820d40e74642e289abc",
+      "bin": ".", "reason": "Exécuteur du graphe de build Windows.", "provenance": "SHA-256 calculé sur la release officielle."
+    },
+    {
+      "id": "libtinfo5", "platform": "linux-x64", "version": "6.3-2ubuntu0.3", "kind": "deb", "file": "libtinfo5.deb",
+      "url": "https://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.3_amd64.deb",
+      "sha256": "4df4288404108f1a156d014e8764a064e977e34e6d44931ab60451694c03c90d",
+      "bin": "lib/x86_64-linux-gnu", "reason": "Bibliothèque libtinfo.so.5 requise par le Clang précompilé ; extraction privée sans apt/sudo.",
+      "provenance": "SHA-256 calculé et comparé à https://packages.ubuntu.com/jammy/amd64/libtinfo5/download ; dépend de libc6 >= 2.33."
+    },
+    {
+      "id": "actionlint-linux", "platform": "linux-x64", "version": "1.7.7", "kind": "archive", "file": "actionlint-linux.tar.gz",
+      "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz",
+      "sha256": "023070a287cd8cccd71515fedc843f1985bf96c436b7effaecce67290e7e0757",
+      "bin": ".", "reason": "Validation statique du workflow, sans linters externes implicites.", "provenance": "SHA-256 calculé sur la release officielle."
+    }
+  ],
+  "actions": [
+    {"id": "actions/checkout", "version": "v4.2.2", "commit": "11bd71901bbe5b1630ceea73d27597364c9af683", "url": "https://codeload.github.com/actions/checkout/tar.gz/11bd71901bbe5b1630ceea73d27597364c9af683", "sha256": "d208694f0c6bafcc85c43bf998637d17c10ff2a09d807325ed8f31a1d86e299d", "reason": "Lecture du dépôt ; archive source référencée, exécution GitHub épinglée au commit."},
+    {"id": "actions/upload-artifact", "version": "v4.6.2", "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02", "url": "https://codeload.github.com/actions/upload-artifact/tar.gz/ea165f8d65b6e75b540449e92b4886f43607fa02", "sha256": "b7e8bdaab718e6bd4b78925b8880a96bfc0272338005017453e24ab3f83149d0", "reason": "Archivage des preuves ; SHA d'archive documentaire, chargeur GitHub fondé sur le commit."}
+  ]
+}

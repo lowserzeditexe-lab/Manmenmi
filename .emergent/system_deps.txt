@@ -1,0 +1,7 @@
+clang=1:14.0-55.7~deb12u1
+cmake=3.25.1-1
+g++-x86-64-linux-gnu=4:12.2.0-3
+libclang-rt-14-dev=1:14.0.6-12
+llvm=1:14.0-55.7~deb12u1
+ninja-build=1.11.1-2~deb12u1
+qemu-user=1:7.2+dfsg-7+deb12u18+b3

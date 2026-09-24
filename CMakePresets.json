@@ -1,0 +1,29 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 25, "patch": 0},
+  "configurePresets": [
+    {"name": "base", "hidden": true, "generator": "Ninja", "binaryDir": "${sourceDir}/build/${presetName}", "cacheVariables": {"BUILD_TESTING": "ON", "MANMENMI_WARNINGS_AS_ERRORS": "ON"}},
+    {"name": "linux-clang-debug", "inherits": "base", "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux"}, "cacheVariables": {"CMAKE_CXX_COMPILER": "clang++", "CMAKE_BUILD_TYPE": "Debug"}},
+    {"name": "linux-clang-release", "inherits": "linux-clang-debug", "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"}},
+    {"name": "linux-clang-coverage", "inherits": "linux-clang-debug", "cacheVariables": {"MANMENMI_COVERAGE": "ON"}},
+    {"name": "linux-clang-sanitizers", "inherits": "linux-clang-debug", "cacheVariables": {"MANMENMI_SANITIZERS": "ON"}},
+    {"name": "windows-clang-debug", "inherits": "base", "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows"}, "cacheVariables": {"CMAKE_CXX_COMPILER": "x86_64-w64-mingw32-clang++", "CMAKE_BUILD_TYPE": "Debug"}},
+    {"name": "windows-clang-release", "inherits": "windows-clang-debug", "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"}}
+  ],
+  "buildPresets": [
+    {"name": "linux-clang-debug", "configurePreset": "linux-clang-debug"},
+    {"name": "linux-clang-release", "configurePreset": "linux-clang-release"},
+    {"name": "linux-clang-coverage", "configurePreset": "linux-clang-coverage"},
+    {"name": "linux-clang-sanitizers", "configurePreset": "linux-clang-sanitizers"},
+    {"name": "windows-clang-debug", "configurePreset": "windows-clang-debug"},
+    {"name": "windows-clang-release", "configurePreset": "windows-clang-release"}
+  ],
+  "testPresets": [
+    {"name": "linux-clang-debug", "configurePreset": "linux-clang-debug", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "linux-clang-release", "configurePreset": "linux-clang-release", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "linux-clang-coverage", "configurePreset": "linux-clang-coverage", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "linux-clang-sanitizers", "configurePreset": "linux-clang-sanitizers", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "windows-clang-debug", "configurePreset": "windows-clang-debug", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}},
+    {"name": "windows-clang-release", "configurePreset": "windows-clang-release", "output": {"outputOnFailure": true}, "execution": {"noTestsAction": "error"}}
+  ]
+}

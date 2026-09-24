@@ -1,0 +1,11 @@
+# Optional development verification on Debian non-x64 hosts; not a runtime dependency.
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
+set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_CXX_COMPILER_TARGET x86_64-linux-gnu)
+find_program(MANMENMI_QEMU qemu-x86_64 REQUIRED)
+set(MANMENMI_CROSS_ROOT "/usr/x86_64-linux-gnu" CACHE PATH "Cross glibc runtime used by QEMU")
+if(NOT EXISTS "${MANMENMI_CROSS_ROOT}/lib/ld-linux-x86-64.so.2")
+  message(FATAL_ERROR "Install g++-x86-64-linux-gnu or set MANMENMI_CROSS_ROOT")
+endif()
+set(CMAKE_CROSSCOMPILING_EMULATOR "${MANMENMI_QEMU};-L;${MANMENMI_CROSS_ROOT}")
